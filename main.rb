@@ -106,7 +106,7 @@ def get_transactions
     if  (date_interval1 - date_interval2).abs > days
       break
     end
-    #If transaction date is older than 90 days we dont check rest of the table.
+    #If transaction date is older than days we dont check rest of the table.
 
     #Extract Currency
     payment_currency = payment_money.delete!(' ')
@@ -126,7 +126,6 @@ def get_transactions
     else
       account.add_transaction(transaction)
       account.show_data
-      p
     end
 
     #Counting tr_steps to parse table data
@@ -135,7 +134,7 @@ def get_transactions
     # LOOP BREAK CONDITIONS
     # LOOP BREAK CONDITIONS
     # LOOP BREAK CONDITIONS
-    #Checking if we are in table size
+    #Checking if we are in table sizes
     if tr_step > count_limit
       break
     end
@@ -144,8 +143,11 @@ def get_transactions
   return account
 end
 
+#DO the magic
 wait_for_parsing
 a = get_transactions
 fJSON = File.open("REZULTATUL.json","w")
 fJSON.write(a.to_json)
 fJSON.close
+
+#If this script dont work just try to pray harder to god.
