@@ -20,7 +20,7 @@ $b = Watir::Browser.new :chrome #, headless: true
 
 def wait_for_parsing
   $b.goto 'https://www.sberbank.ru/common/img/uploaded/secure/demosbol/general.html#/'
-  sleep(3)
+  sleep(6)
   $p = Nokogiri::HTML.parse($b.html)
 end
 
@@ -72,7 +72,7 @@ def get_transactions
 
   #Opening needed page to extract transactions
   $b.a(:href => "#/history_operations").click!
-  sleep(3)
+  sleep(6)
   $p = Nokogiri::HTML.parse($b.html)
   tr_step = 2
 
@@ -101,7 +101,8 @@ def get_transactions
     date_interval2 = (time.month.to_i * 30) + time.day.to_i
     # 90 days = 3 months
     # Dont check year bcs table data is out of date (2015)
-    days = 90
+    # Change days if no loaded data.
+    days = 120
     if  (date_interval1 - date_interval2).abs > days
       break
     end
@@ -124,6 +125,8 @@ def get_transactions
       account = ACCOUNT.new(name,currency,balance,nature,transaction)
     else
       account.add_transaction(transaction)
+      account.show_data
+      p
     end
 
     #Counting tr_steps to parse table data
@@ -143,7 +146,6 @@ end
 
 wait_for_parsing
 a = get_transactions
-a.show_data
 fJSON = File.open("REZULTATUL.json","w")
 fJSON.write(a.to_json)
 fJSON.close
